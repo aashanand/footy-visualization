@@ -5,7 +5,7 @@ shinyUI(fluidPage(
         
         title = "European Football Leagues",
         
-        titlePanel("European Football leages"),
+        titlePanel("European Football leagues"),
         
         fluidRow(
                 column(12,
@@ -15,7 +15,9 @@ shinyUI(fluidPage(
         
         fluidRow(
                 column(4,
-                       selectInput('selectCountry','Country',country.list)
+                       selectInput('selectCountry',
+                                   'Country',
+                                   country.values)
                        ),
                 column(4,
                        htmlOutput('selectSeason')

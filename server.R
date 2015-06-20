@@ -2,10 +2,17 @@
 library(shiny)
 
 shinyServer(function(input, output) {
+        
         output$selectSeason <- renderUI({
-                selectInput('selectSeason','Season',season.list)
+                selectInput('selectSeason',
+                            'Season',
+                            season.values(input$selectCountry))
         })
+        
         output$selectTier <- renderUI({
-                selectInput('selectTier','Tier',tier.list)
+                selectInput('selectTier',
+                            'Tier',
+                            tier.values(input$selectCountry,
+                                        input$selectSeason))
         })
 })
