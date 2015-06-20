@@ -1,21 +1,22 @@
 ## ui.R
 library(shiny)
 
-data('engsoccerteams', package='engsoccerdata')
-
 shinyUI(fluidPage(
         
-        title = "Historical Football Visualizations",
+        title = "European Football Leagues",
         
-        titlePanel("Historical European Football Visualizations"),
+        titlePanel("European Football leages"),
         
         fluidRow(
-                column(6,
-                       htmlOutput('selectLeague')
+                column(4,
+                       selectInput('selectCountry','Select Country',country.list)
                        ),
-                column(6,
-                       htmlOutput('selectSeason')
-                       )
+                column(4,
+                       selectInput('selectSeason','Select Season',season.list)
+                       ),
+                column(4,
+                       selectInput('selectTier','Select Tier',tier.list)
+                )
         ),
         
         hr()
