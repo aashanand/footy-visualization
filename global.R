@@ -26,15 +26,27 @@ colnames(country.dfs[["England"]])[
 country.dfs[["England"]]$tier <- country.dfs[["England"]]$division
 
 ## Tier column recode function
-# tier.recode <- function(tiercolumn){
-#         tiercolumn
+# tier.recode <- function(cname, tiercol){
+#         if (cname=="Germany"){
+#                 tiercol <- revalue(as.character(tiercol), c("1"="Bundesliga"))
+#         } else if (cname=="Italy"){
+#                 tiercol <- revalue(as.character(tiercol), c("1"="Serie A"))
+#         } else if (cname=="Netherlands"){
+#                 tiercol <- revalue(as.character(tiercol), c("1"="Eredivisie"))
+#         } else if (cname=="Spain"){
+#                 tiercol <- revalue(as.character(tiercol), c("1"="La Liga"))
+#         }
+#         return(tiercol)
 # }
 
 ## Calculated columns for all datasets
 country.dfs <- llply(country.dfs,
                      function(x) mutate(x, seasonValue=paste(Season,"-",Season+1)))
-# country.dfs <- llply(country.dfs,
-#                      function(x) mutate(x, tier=tier.recode(tier)))
+# country.dfs <- llply(seq_along(country.dfs),
+#                      function(x,names) mutate(country.dfs[[x]],
+#                                               tier=tier.recode(names[x],
+#                                                                country.dfs[[x]]$tier)),
+#                      names=names(country.dfs))
 
 ## Selector value generators for 'selectSeason' and 'selectTier' selectors
 season.values <- function(country){
