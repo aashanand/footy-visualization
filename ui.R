@@ -30,5 +30,10 @@ shinyUI(fluidPage(
                 )
         ),
         
-        hr()
+        hr(),
+        
+        fluidRow(
+                column(12,
+                       showOutput('heatMap','Highcharts'))
+        )
 ))

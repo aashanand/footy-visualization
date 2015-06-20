@@ -2,6 +2,7 @@
 library(engsoccerdata)
 library(plyr)
 library(dplyr)
+library(rCharts)
 
 data('engsoccerdata2', 'bundesliga',
      'italycalcio', 'holland1', 'spainliga')
@@ -66,4 +67,10 @@ season.values <- function(country){
 tier.values <- function(country,season){
         relevanttiers <- country.dfs[[country]]$tier[which(country.dfs[[country]]$seasonValue==season)]
         as.list(unique(relevanttiers))
+}
+
+create.heat.map <- function(country,season,tier){
+        h1 <- Highcharts$new()
+        h1$title(text="Heat Map")
+        h1
 }

@@ -20,4 +20,10 @@ shinyServer(function(input, output) {
                              tier.values(input$selectCountry,
                                          input$selectSeason))
         })
+        
+        output$heatMap <- renderChart2({
+                create.heat.map(input$selectCountry,
+                                input$selectSeason,
+                                input$selectTier)
+        })
 })
