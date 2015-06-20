@@ -25,11 +25,18 @@ colnames(country.dfs[["England"]])[
         which(colnames(country.dfs[["England"]])=="Date")] <- 'date'
 country.dfs[["England"]]$tier <- country.dfs[["England"]]$division
 
-# Calculated columns for all datasets
+## Tier column recode function
+# tier.recode <- function(tiercolumn){
+#         tiercolumn
+# }
+
+## Calculated columns for all datasets
 country.dfs <- llply(country.dfs,
                      function(x) mutate(x, seasonValue=paste(Season,"-",Season+1)))
+# country.dfs <- llply(country.dfs,
+#                      function(x) mutate(x, tier=tier.recode(tier)))
 
-# Selector value generators for 'selectSeason' and 'selectTier' selectors
+## Selector value generators for 'selectSeason' and 'selectTier' selectors
 season.values <- function(country){
         as.list(sort(unique(country.dfs[[country]]$seasonValue),decreasing=T))
 }

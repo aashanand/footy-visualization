@@ -10,9 +10,9 @@ shinyServer(function(input, output) {
         })
         
         output$selectTier <- renderUI({
-                selectInput('selectTier',
-                            'Tier',
-                            tier.values(input$selectCountry,
-                                        input$selectSeason))
+                radioButtons('selectTier',
+                             'Division',
+                             tier.values(input$selectCountry,
+                                         input$selectSeason))
         })
 })

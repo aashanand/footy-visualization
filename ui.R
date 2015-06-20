@@ -14,15 +14,18 @@ shinyUI(fluidPage(
         ),
         
         fluidRow(
-                column(4,
+                column(6,
                        selectInput('selectCountry',
                                    'Country',
                                    country.values)
                        ),
-                column(4,
+                column(6,
                        htmlOutput('selectSeason')
-                       ),
-                column(4,
+                       )
+                ),
+        
+        fluidRow(
+                column(12,
                        htmlOutput('selectTier')
                 )
         ),
