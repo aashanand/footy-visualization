@@ -8,14 +8,20 @@ shinyUI(fluidPage(
         titlePanel("European Football leages"),
         
         fluidRow(
+                column(12,
+                       h4("1-2 lines about this app")
+                )
+        ),
+        
+        fluidRow(
                 column(4,
-                       selectInput('selectCountry','Select Country',country.list)
+                       selectInput('selectCountry','Country',country.list)
                        ),
                 column(4,
-                       selectInput('selectSeason','Select Season',season.list)
+                       htmlOutput('selectSeason')
                        ),
                 column(4,
-                       selectInput('selectTier','Select Tier',tier.list)
+                       htmlOutput('selectTier')
                 )
         ),
         
