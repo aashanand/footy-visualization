@@ -25,28 +25,38 @@ colnames(country.dfs[["England"]])[
         which(colnames(country.dfs[["England"]])=="Date")] <- 'date'
 country.dfs[["England"]]$tier <- country.dfs[["England"]]$division
 
-## Tier column recode function
-# tier.recode <- function(cname, tiercol){
-#         if (cname=="Germany"){
-#                 tiercol <- revalue(as.character(tiercol), c("1"="Bundesliga"))
-#         } else if (cname=="Italy"){
-#                 tiercol <- revalue(as.character(tiercol), c("1"="Serie A"))
-#         } else if (cname=="Netherlands"){
-#                 tiercol <- revalue(as.character(tiercol), c("1"="Eredivisie"))
-#         } else if (cname=="Spain"){
-#                 tiercol <- revalue(as.character(tiercol), c("1"="La Liga"))
-#         }
-#         return(tiercol)
-# }
-
 ## Calculated columns for all datasets
+country.dfs[["Germany"]]$tier <- revalue(
+        as.character(country.dfs[["Germany"]]$tier), c("1"="Bundesliga"))
+country.dfs[["Italy"]]$tier <- revalue(
+        as.character(country.dfs[["Italy"]]$tier), c("1"="Serie A"))
+country.dfs[["Netherlands"]]$tier <- revalue(
+        as.character(country.dfs[["Netherlands"]]$tier), c("1"="Eredivisie"))
+country.dfs[["Spain"]]$tier <- revalue(
+        as.character(country.dfs[["Spain"]]$tier), c("1"="Primera Division"))
+country.dfs[["England"]]$tier[which(country.dfs[["England"]]$Season<1992)] <- 
+        revalue(as.character(country.dfs[["England"]]$tier[which(country.dfs[["England"]]$Season<1992)]), 
+                c("1"="Football League First Division",
+                  "2"="Football League Second Division",
+                  "3"="Football League Third Division",
+                  "3a"="Football Leage Third Division North",
+                  "3b"="Football League Third Division South",
+                  "4"="Football League Fourth Division"))
+country.dfs[["England"]]$tier[which(country.dfs[["England"]]$Season%in%1992:2004)] <- 
+        revalue(as.character(country.dfs[["England"]]$tier[which(country.dfs[["England"]]$Season%in%1992:2004)]), 
+                c("1"="Premier Leage",
+                  "2"="Football League First Division",
+                  "3"="Football League Second Division",
+                  "4"="Football League Third Division"))
+country.dfs[["England"]]$tier[which(country.dfs[["England"]]$Season>2004)] <- 
+        revalue(as.character(country.dfs[["England"]]$tier[which(country.dfs[["England"]]$Season>2004)]), 
+                c("1"="Premier League",
+                  "2"="Football League Championship",
+                  "3"="Football League One",
+                  "4"="Football League Two"))
+
 country.dfs <- llply(country.dfs,
                      function(x) mutate(x, seasonValue=paste(Season,"-",Season+1)))
-# country.dfs <- llply(seq_along(country.dfs),
-#                      function(x,names) mutate(country.dfs[[x]],
-#                                               tier=tier.recode(names[x],
-#                                                                country.dfs[[x]]$tier)),
-#                      names=names(country.dfs))
 
 ## Selector value generators for 'selectSeason' and 'selectTier' selectors
 season.values <- function(country){
