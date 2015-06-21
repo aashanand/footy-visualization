@@ -64,6 +64,7 @@ country.dfs <- llply(country.dfs,
                                                          ifelse(goaldif<0,3,2))))
 
 ## Selector value generators for 'selectSeason' and 'selectTier' selectors
+# These don't use dplyr because of an undiagnosed error with Shiny+dplyr
 season.values <- function(country){
         as.list(sort(unique(country.dfs[[country]]$seasonValue),decreasing=T))
 }
@@ -73,15 +74,17 @@ tier.values <- function(country,season){
         as.list(unique(relevanttiers))
 }
 
+date.values <- function(country,season,div){
+        availabledates <- country.dfs[[country]]$date[which(country.dfs[[country]]$seasonValue==season&country.dfs[[country]]$tier==div)]
+        as.list(c(min(availabledates),max(availabledates)))
+}
+
 season.table <- function(df,cutoff=NULL){
         temp <-
                 rbind(
                         df %>% select(team=home, opp=visitor, GF=hgoal, GA=vgoal),
                         df %>% select(team=visitor, opp=home, GF=vgoal, GA=hgoal)
                 ) #rbind two copies of the orignal df, simply reversing home/away team for each match
-        if (!is.null(cutoff)) {
-                temp <- filter(temp,date<cutoff)
-        }
                 
         temp1<-
                 temp %>%
@@ -102,12 +105,12 @@ season.table <- function(df,cutoff=NULL){
         temp1
 }
 
-heat.map.data <- function(country,season,div){
+heat.map.data <- function(country,season,div,cutoff=Sys.Date()){
         df <- filter(country.dfs[[country]],
-                     seasonValue==season & tier==div)
+                             seasonValue==season & tier==div & date<=cutoff)
         
         df1 <- season.table(df)
-        df1 <- df1 %>% select(team,pos) %>% arrange(pos)
+        df1 <- df1 %>% arrange(pos,desc(gd)) %>% select(team,pos) 
         
         homeorder <- df1$team
         visitororder <- rev(df1$team)
@@ -129,9 +132,9 @@ heat.map.data <- function(country,season,div){
         return(list(homeorder,visitororder,heatmapdata))
 }
 
-create.heat.map <- function(country,season,tier){
+create.heat.map <- function(country,season,tier,cutoff){
         if(!is.null(season)&!is.null(tier)){
-                hmd <- heat.map.data(country,season,tier)
+                hmd <- heat.map.data(country,season,tier,cutoff)
                 h1 <- Highcharts$new()
                 h1$title(text=paste("Results Matrix for",tier,season))
                 h1$chart(type="heatmap",height=800)
@@ -165,4 +168,11 @@ create.heat.map <- function(country,season,tier){
         } else {
                 Highcharts$new()
         }
+}
+
+standings.table.data <- function(country,season,div,cutoff){
+        x <<- cutoff
+        df <- country.dfs[[country]][which(country.dfs[[country]]$seasonValue==season & country.dfs[[country]]$tier==div & country.dfs[[country]]$date<=cutoff),]
+        df1 <- as.data.frame(season.table(df))
+        df1
 }

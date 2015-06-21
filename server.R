@@ -25,11 +25,29 @@ shinyServer(function(input, output) {
         output$heatMap <- renderChart2({
                 create.heat.map(input$selectCountry,
                                 input$selectSeason,
-                                input$selectTier)
+                                input$selectTier,
+                                input$selectDate)
         })
         
         output$selectDate <- renderUI({
-                dateInput('selectDate',"Standings as on")
+                dateInput('selectDate',"Show Results as on Date",
+                          format="M dd yyyy",
+                          min=date.values(input$selectCountry,
+                                          input$selectSeason,
+                                          input$selectTier)[[1]],
+                          max=date.values(input$selectCountry,
+                                          input$selectSeason,
+                                          input$selectTier)[[2]],
+                          value=date.values(input$selectCountry,
+                                            input$selectSeason,
+                                            input$selectTier)[[2]])
+        })
+        
+        output$standingsTable <- renderTable({
+                standings.table.data(input$selectCountry,
+                                     input$selectSeason,
+                                     input$selectTier,
+                                     input$selectDate)
         })
         
 })

@@ -36,20 +36,20 @@ shinyUI(fluidPage(
                 )
         ),
         
+        fluidRow(
+                column(6,
+                       htmlOutput('selectDate')
+                       )
+                ),
+        
         hr(),
         
         tabsetPanel(type="tabs",
                     tabPanel("Results Matrix",showOutput('heatMap','Highcharts')),
                     tabPanel("Standings",
-                             fluidPage(
-                                     fluidRow(
-                                             column(6,offset=3,
-                                                    htmlOutput('selectDate')
-                                             )),
-                                     fluidRow(
-                                             column(12,
-                                                    htmlOutput('standingsTable'))
-                                             )
+                             fluidRow(
+                                     column(12,
+                                            htmlOutput('standingsTable'))
                                      )
                              )
         
