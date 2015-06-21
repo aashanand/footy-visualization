@@ -99,9 +99,9 @@ season.table <- function(df,cutoff=NULL){
                           L = sum(GD<0)
                 ) %>%
                 mutate(Pts = (W*3) + D) %>%
-                arrange(desc(Pts))
+                arrange(desc(Pts),desc(gd))
         
-        temp1 <- temp1 %>% mutate(pos = rank(desc(Pts)))
+        temp1$pos <- 1:dim(temp1)[1]
         temp1
 }
 
@@ -180,12 +180,21 @@ standings.table.data <- function(country,season,div,cutoff){
 }
 
 bump.chart.data <- function(df){
-        df <- select(df,date,home,visitor)
-        df <- distinct(select(reshape2::melt(df,id.vars="date"),date,value))
-        colnames(df) <- c("date","team")
-        df$rank <- rpois(length(df$date),15)
-        df$date <- as.numeric(as.POSIXct(as.Date(df$date)))*1000
-        df
+        df1 <- select(df,date,home,visitor)
+        df1 <- distinct(select(reshape2::melt(df1,id.vars="date"),date,value))
+        colnames(df1) <- c("date","team")
+        df1 <- ddply(df1,.(date,team),function(x) 1,.drop=FALSE)
+        df1 <- select(df1,-V1)
+        df2 <- data.frame()
+        for (cdate in unique(df1$date)){
+                tempstandings <- season.table(filter(df,date<=cdate))
+                tempstandings$date <- cdate
+                df2 <- rbind(df2,tempstandings)
+        }
+        df1 <- left_join(df1,df2,by=c("date","team"))
+        df1$rank <- df1$pos
+        df1$date <- as.numeric(as.POSIXct(as.Date(df1$date)))*1000
+        df1
 }
 
 create.bump.chart <- function(country,season,div,cutoff){
