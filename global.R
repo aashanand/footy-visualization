@@ -1,11 +1,11 @@
 ## global.R
-library(engsoccerdata)
+# library(engsoccerdata)
 library(plyr)
 library(dplyr)
 library(rCharts)
 
 data('engsoccerdata2', 'bundesliga',
-     'italycalcio', 'holland1', 'spainliga')
+     'italycalcio', 'holland1', 'spainliga',package="engsoccerdata")
 
 # Static selector values for 'Country' selector
 country.values <- list("England", "Germany",
