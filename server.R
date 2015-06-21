@@ -5,7 +5,7 @@ shinyServer(function(input, output) {
         
         output$selectSeason <- renderUI({
                 selectInput('selectSeason',
-                            'Season',
+                            'Season:',
                             season.values(input$selectCountry),
                             selected = input$selectSeason)
         })
@@ -16,7 +16,7 @@ shinyServer(function(input, output) {
                         return()
                 
                 radioButtons('selectTier',
-                             'Division',
+                             'League:',
                              inline = T,
                              tier.values(input$selectCountry,
                                          input$selectSeason))
@@ -30,7 +30,7 @@ shinyServer(function(input, output) {
         })
         
         output$selectDate <- renderUI({
-                dateInput('selectDate',"See state of the league as on:",
+                dateInput('selectDate',"Show me what the league looked like on:",
                           format="M dd yyyy",
                           min=date.values(input$selectCountry,
                                           input$selectSeason,
