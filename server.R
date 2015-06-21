@@ -30,7 +30,7 @@ shinyServer(function(input, output) {
         })
         
         output$selectDate <- renderUI({
-                dateInput('selectDate',"Show Results as on Date",
+                dateInput('selectDate',"See state of the league as on:",
                           format="M dd yyyy",
                           min=date.values(input$selectCountry,
                                           input$selectSeason,
@@ -43,11 +43,13 @@ shinyServer(function(input, output) {
                                             input$selectTier)[[2]])
         })
         
-        output$standingsTable <- renderTable({
+        output$standingsTable <- renderDataTable(
                 standings.table.data(input$selectCountry,
                                      input$selectSeason,
                                      input$selectTier,
-                                     input$selectDate)
-        })
+                                     input$selectDate),
+                options = list(lengthChange=F,autoWidth=F,
+                               columnDefs=list(list(width="48%",targets=0))
+                               ))
         
 })

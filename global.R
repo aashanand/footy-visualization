@@ -174,5 +174,7 @@ standings.table.data <- function(country,season,div,cutoff){
         x <<- cutoff
         df <- country.dfs[[country]][which(country.dfs[[country]]$seasonValue==season & country.dfs[[country]]$tier==div & country.dfs[[country]]$date<=cutoff),]
         df1 <- as.data.frame(season.table(df))
+        df1 <- select(df1,-pos)
+        colnames(df1) <- toupper(colnames(df1))
         df1
 }

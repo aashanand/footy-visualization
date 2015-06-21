@@ -49,7 +49,7 @@ shinyUI(fluidPage(
                     tabPanel("Standings",
                              fluidRow(
                                      column(12,
-                                            htmlOutput('standingsTable'))
+                                            dataTableOutput('standingsTable'))
                                      )
                              )
         
