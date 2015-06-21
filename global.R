@@ -158,7 +158,6 @@ create.heat.map <- function(country,season,tier){
                                  "https://code.highcharts.com/highcharts-more.js",
                                  "https://code.highcharts.com/modules/exporting.js",
                                  "https://code.highcharts.com/modules/heatmap.js"))
-                htest<<-h1
                 h1
         } else {
                 Highcharts$new()
