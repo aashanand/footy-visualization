@@ -61,7 +61,7 @@ country.dfs <- llply(country.dfs,
                                         goaldif=hgoal-vgoal))
 country.dfs <- llply(country.dfs,
                      function(x) mutate(x, result=ifelse(goaldif>0,1,
-                                                         ifelse(goaldif<0,2,3))))
+                                                         ifelse(goaldif<0,3,2))))
 
 ## Selector value generators for 'selectSeason' and 'selectTier' selectors
 season.values <- function(country){
@@ -109,8 +109,8 @@ heat.map.data <- function(country,season,div){
         homeorder <- df1$team
         visitororder <- rev(df1$team)
         
-        df$xpos <- aaply(df$home,1,function(x) which(homeorder==x))
-        df$ypos <- aaply(df$visitor,1,function(x) which(visitororder==x))
+        df$xpos <- aaply(df$visitor,1,function(x) which(homeorder==x)-1)
+        df$ypos <- aaply(df$home,1,function(x) which(visitororder==x)-1)
         
         heatmapdata <- list()
         for (i in 1:dim(df)[1]){
@@ -118,8 +118,9 @@ heat.map.data <- function(country,season,div){
                         x=df[i,]$xpos,
                         y=df[i,]$ypos,
                         value=df[i,]$result,
-                        name=paste(df[i,]$home,"vs.",df[i,]$away),
-                        score=df[i,]$FT)
+                        fixture=paste(df[i,]$home,"vs.",df[i,]$visitor),
+                        score=df[i,]$FT,
+                        date=df[i,]$date)
         }
         
         return(list(homeorder,visitororder,heatmapdata))
@@ -130,18 +131,34 @@ create.heat.map <- function(country,season,tier){
                 hmd <- heat.map.data(country,season,tier)
                 h1 <- Highcharts$new()
                 h1$title(text=paste("Results Matrix for",tier,season))
-                h1$chart(type="heatmap")
-                h1$xAxis(categories=hmd[[1]])
-                h1$yAxis(categories=hmd[[2]])
-                h1$data(hmd[[3]])
-                h1$addParams(colorAxis=list(min = 0,
-                                            minColor='#FFFFFF',
-                                            maxColor='#7cb5ec'))
+                h1$chart(type="heatmap",height=800)
+                h1$xAxis(categories=hmd[[1]],
+                         labels=list(rotation=-90),
+                         opposite=TRUE,
+                         title=list(text="Away Team"),
+                         gridLineColor="transparent",
+                         lineColor="transparent",
+                         tickColor="transparent")
+                h1$yAxis(categories=hmd[[2]],
+                         gridLineColor="transparent",
+                         title=list(text="Home Team"))
+                h1$series(data=hmd[[3]],
+                          borderWidth=1,
+                          dataLabels=list(enabled=TRUE,
+                                          formatter="#!function(){return this.point.score;}!#"))
+                h1$tooltip(followTouchMove=TRUE,followPointer=TRUE,
+                           formatter="#!function(){return '<b>'+this.point.fixture+'</b><br>'+Highcharts.dateFormat('%b %d %Y',new Date(this.point.date))+'<br>'+this.point.score;}!#")
+                h1$addParams(colorAxis=list(dataClasses=list(
+                        list(from=1,to=1,color='#91bfdb',name="Home Win"),
+                        list(from=2,to=2,color='#ffffbf',name="Draw"),
+                        list(from=3,to=3,color='#fc8d59',name="Away Win")
+                )))
                 h1$addAssets(js=c("https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js",
                                  "https://code.highcharts.com/highcharts.js",
                                  "https://code.highcharts.com/highcharts-more.js",
                                  "https://code.highcharts.com/modules/exporting.js",
                                  "https://code.highcharts.com/modules/heatmap.js"))
+                htest<<-h1
                 h1
         } else {
                 Highcharts$new()
