@@ -46,7 +46,8 @@ shinyUI(fluidPage(
         
         tabsetPanel(type="tabs",
                     tabPanel("Results Matrix",showOutput('heatMap','Highcharts')),
-                    tabPanel("Standings",dataTableOutput('standingsTable'))
-                    
-        
-)))
+                    tabPanel("Standings",dataTableOutput('standingsTable')),
+                    tabPanel("Story of the Season",showOutput('storyPlot','Rickshaw'))
+                    )
+        )
+)

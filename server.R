@@ -52,4 +52,8 @@ shinyServer(function(input, output) {
                                columnDefs=list(list(width="48%",targets=0))
                                ))
         
+        output$storyPlot <- renderChart2({
+                Rickshaw$new()
+        })
+        
 })
