@@ -57,7 +57,11 @@ country.dfs[["England"]]$tier[which(country.dfs[["England"]]$Season>2004)] <-
                   "4"="Football League Two"))
 
 country.dfs <- llply(country.dfs,
-                     function(x) mutate(x, seasonValue=paste(Season,"-",Season+1)))
+                     function(x) mutate(x, seasonValue=paste(Season,"-",Season+1),
+                                        goaldif=hgoal-vgoal))
+country.dfs <- llply(country.dfs,
+                     function(x) mutate(x, result=ifelse(goaldif>0,"H",
+                                                         ifelse(goaldif<0,"A","D"))))
 
 ## Selector value generators for 'selectSeason' and 'selectTier' selectors
 season.values <- function(country){
