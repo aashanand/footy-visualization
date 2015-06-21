@@ -16,7 +16,8 @@ shinyServer(function(input, output) {
                         return()
                 
                 radioButtons('selectTier',
-                             'Division', inline = T,
+                             'Division',
+                             inline = T,
                              tier.values(input$selectCountry,
                                          input$selectSeason))
         })

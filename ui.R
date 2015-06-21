@@ -9,13 +9,13 @@ shinyUI(fluidPage(
                   tags$script(src = "https://code.highcharts.com/modules/heatmap.js")
         ),
         
-        title = "European Football Leagues",
+        title = "Euro Footy Charts",
         
-        titlePanel("European Football leagues"),
+        titlePanel("Euro Footy Charts"),
         
         fluidRow(
                 column(12,
-                       h4("1-2 lines about this app")
+                       h4("Explore data from 682 seasons of football, covering 8 leagues in 5 countries.")
                 )
         ),
         
