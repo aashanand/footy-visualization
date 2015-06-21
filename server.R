@@ -53,7 +53,10 @@ shinyServer(function(input, output) {
                                ))
         
         output$storyPlot <- renderChart2({
-                Rickshaw$new()
+                create.bump.chart(input$selectCountry,
+                                  input$selectSeason,
+                                  input$selectTier,
+                                  input$selectDate)
         })
         
 })

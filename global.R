@@ -136,7 +136,8 @@ create.heat.map <- function(country,season,tier,cutoff){
         if(!is.null(season)&!is.null(tier)){
                 hmd <- heat.map.data(country,season,tier,cutoff)
                 h1 <- Highcharts$new()
-                h1$title(text=paste("Results Matrix for",tier,season))
+                h1$title(text="Results Matrix")
+                h1$subtitle(text=paste(tier,"-",season))
                 h1$chart(type="heatmap",height=800)
                 h1$xAxis(categories=hmd[[1]],
                          labels=list(rotation=-90),
@@ -171,10 +172,37 @@ create.heat.map <- function(country,season,tier,cutoff){
 }
 
 standings.table.data <- function(country,season,div,cutoff){
-        x <<- cutoff
         df <- country.dfs[[country]][which(country.dfs[[country]]$seasonValue==season & country.dfs[[country]]$tier==div & country.dfs[[country]]$date<=cutoff),]
         df1 <- as.data.frame(season.table(df))
         df1 <- select(df1,-pos)
         colnames(df1) <- toupper(colnames(df1))
         df1
+}
+
+bump.chart.data <- function(df){
+        df <- select(df,date,home,visitor)
+        df <- distinct(select(reshape2::melt(df,id.vars="date"),date,value))
+        colnames(df) <- c("date","team")
+        df$rank <- rpois(length(df$date),15)
+        df$date <- as.numeric(as.POSIXct(as.Date(df$date)))*1000
+        df
+}
+
+create.bump.chart <- function(country,season,div,cutoff){
+        df <- filter(country.dfs[[country]],seasonValue==season&tier==div&date<=cutoff)
+        df <- bump.chart.data(df)
+        b1 <- hPlot(rank~date,group="team",data=df,type="spline")
+        b1$plotOptions(spline=list(marker=list(enabled=FALSE,symbol='circle')),
+                       series=list(states=list(hover=list(enabled=F))))
+        b1$legend(align='right',verticalAlign='top',layout='vertical',x=0,y=0)
+        b1$xAxis(type="datetime",labels=list(format="{value:%b %Y}"),
+                 gridLineColor="gray",gridLineWidth=0.5)
+        b1$yAxis(title=list(text="League Position"),
+                 min=0,max=max(df$rank),reversed=T,gridLineColor="transparent")
+        b1$chart(zoomType="x",height=400,width=1000)
+        b1$title(text="Story of the Season")
+        b1$subtitle(text=paste(div,"-",season))
+        b1$tooltip(followTouchMove=TRUE,followPointer=TRUE)
+        test <<- b1
+        b1
 }
