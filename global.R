@@ -1,5 +1,5 @@
 ## global.R
-# library(engsoccerdata)
+library(engsoccerdata)
 library(plyr)
 library(dplyr)
 library(rCharts)
