@@ -105,7 +105,7 @@ season.table <- function(df,cutoff=NULL){
         temp1
 }
 
-heat.map.data <- function(country,season,div,cutoff=Sys.Date()){
+heat.map.data <- function(country,season,div,cutoff=NULL){
         df <- filter(country.dfs[[country]],
                              seasonValue==season & tier==div & date<=cutoff)
         
