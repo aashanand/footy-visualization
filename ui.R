@@ -1,7 +1,10 @@
 ## ui.R
 library(shiny)
+library(shinythemes)
 
-shinyUI(fluidPage(
+shinyUI(navbarPage("Euro Footy Charts",
+                   tabPanel("Visualizations",
+        fluidPage(
         
         tags$head(tags$script(src = "https://code.highcharts.com/highcharts.js"),
                   tags$script(src = "https://code.highcharts.com/highcharts-more.js"),
@@ -11,24 +14,31 @@ shinyUI(fluidPage(
         
         title = "Euro Footy Charts",
         
-        titlePanel("Euro Footy Charts"),
+        theme = shinytheme("flatly"),
+        
+        # titlePanel("Euro Footy Charts"),
         
         fluidRow(
                 column(12,
-                       h4("Explore data from 682 seasons of football, covering 8 leagues in 5 countries.")
+                       h4("Explore data from 8 football leagues in 5 countries, spanning 127 years.")
                 )
         ),
         
+        hr(),
+        
         fluidRow(
-                column(6,
+                column(4,
                        selectInput('selectCountry',
-                                   'Country',
+                                   'Country:',
                                    country.values)
                        ),
-                column(6,
+                column(4,
                        htmlOutput('selectSeason')
-                       )
-                ),
+                       ),
+                column(4,
+                       htmlOutput('selectDate')
+                )
+        ),
         
         fluidRow(
                 column(12,
@@ -36,18 +46,14 @@ shinyUI(fluidPage(
                 )
         ),
         
-        fluidRow(
-                column(6,
-                       htmlOutput('selectDate')
-                       )
-                ),
-        
         hr(),
         
         tabsetPanel(type="tabs",
                     tabPanel("Results Matrix",showOutput('heatMap','highcharts')),
                     tabPanel("Standings",dataTableOutput('standingsTable')),
-                    tabPanel("Story of the Season",showOutput('storyPlot','highcharts'))
+                    tabPanel("Ranking Evolution",h6("This plot might take a few moments to render. Zoom by dragging your mouse over the plot. Filter by clicking the legend."),showOutput('storyPlot','highcharts'))
                     )
         )
-)
+),
+tabPanel("About",
+         fluidPage(includeMarkdown('README.md')))))

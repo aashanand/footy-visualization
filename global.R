@@ -137,7 +137,7 @@ create.heat.map <- function(country,season,tier,cutoff){
                 hmd <- heat.map.data(country,season,tier,cutoff)
                 h1 <- Highcharts$new()
                 h1$title(text="Results Matrix")
-                h1$subtitle(text=paste(tier,"-",season))
+                h1$subtitle(text=paste(tier,"-",season,"as on",cutoff))
                 h1$chart(type="heatmap",height=800)
                 h1$xAxis(categories=hmd[[1]],
                          labels=list(rotation=-90),
@@ -209,8 +209,8 @@ create.bump.chart <- function(country,season,div,cutoff){
         b1$yAxis(title=list(text="League Position"),
                  min=0,max=max(df$rank),reversed=T,gridLineColor="transparent")
         b1$chart(zoomType="x",height=400,width=1000)
-        b1$title(text="Story of the Season")
-        b1$subtitle(text=paste(div,"-",season))
+        b1$title(text="Evolution of Rankings")
+        b1$subtitle(text=paste(div,"-",season,"as on",cutoff))
         b1$tooltip(followTouchMove=TRUE,followPointer=TRUE)
         test <<- b1
         b1
