@@ -27,4 +27,9 @@ shinyServer(function(input, output) {
                                 input$selectSeason,
                                 input$selectTier)
         })
+        
+        output$selectDate <- renderUI({
+                dateInput('selectDate',"Standings as on")
+        })
+        
 })

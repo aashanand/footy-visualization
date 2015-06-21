@@ -73,13 +73,16 @@ tier.values <- function(country,season){
         as.list(unique(relevanttiers))
 }
 
-season.table <- function(df){
+season.table <- function(df,cutoff=NULL){
         temp <-
                 rbind(
                         df %>% select(team=home, opp=visitor, GF=hgoal, GA=vgoal),
                         df %>% select(team=visitor, opp=home, GF=vgoal, GA=hgoal)
                 ) #rbind two copies of the orignal df, simply reversing home/away team for each match
-        
+        if (!is.null(cutoff)) {
+                temp <- filter(temp,date<cutoff)
+        }
+                
         temp1<-
                 temp %>%
                 mutate(GD = GF-GA) %>%
