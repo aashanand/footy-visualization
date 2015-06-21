@@ -45,7 +45,7 @@ country.dfs[["England"]]$tier[which(country.dfs[["England"]]$Season<1992)] <-
                   "4"="Football League Fourth Division"))
 country.dfs[["England"]]$tier[which(country.dfs[["England"]]$Season%in%1992:2004)] <- 
         revalue(as.character(country.dfs[["England"]]$tier[which(country.dfs[["England"]]$Season%in%1992:2004)]), 
-                c("1"="Premier Leage",
+                c("1"="Premier League",
                   "2"="Football League First Division",
                   "3"="Football League Second Division",
                   "4"="Football League Third Division"))
