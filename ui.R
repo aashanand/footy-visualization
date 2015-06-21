@@ -3,6 +3,12 @@ library(shiny)
 
 shinyUI(fluidPage(
         
+        tags$head(tags$script(src = "https://code.highcharts.com/highcharts.js"),
+                  tags$script(src = "https://code.highcharts.com/highcharts-more.js"),
+                  tags$script(src = "https://code.highcharts.com/modules/exporting.js"),
+                  tags$script(src = "https://code.highcharts.com/modules/heatmap.js")
+        ),
+        
         title = "European Football Leagues",
         
         titlePanel("European Football leagues"),

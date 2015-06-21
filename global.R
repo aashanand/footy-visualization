@@ -60,8 +60,8 @@ country.dfs <- llply(country.dfs,
                      function(x) mutate(x, seasonValue=paste(Season,"-",Season+1),
                                         goaldif=hgoal-vgoal))
 country.dfs <- llply(country.dfs,
-                     function(x) mutate(x, result=ifelse(goaldif>0,"H",
-                                                         ifelse(goaldif<0,"A","D"))))
+                     function(x) mutate(x, result=ifelse(goaldif>0,1,
+                                                         ifelse(goaldif<0,2,3))))
 
 ## Selector value generators for 'selectSeason' and 'selectTier' selectors
 season.values <- function(country){
@@ -73,20 +73,75 @@ tier.values <- function(country,season){
         as.list(unique(relevanttiers))
 }
 
+season.table <- function(df){
+        temp <-
+                rbind(
+                        df %>% select(team=home, opp=visitor, GF=hgoal, GA=vgoal),
+                        df %>% select(team=visitor, opp=home, GF=vgoal, GA=hgoal)
+                ) #rbind two copies of the orignal df, simply reversing home/away team for each match
+        
+        temp1<-
+                temp %>%
+                mutate(GD = GF-GA) %>%
+                group_by(team) %>%
+                summarize(GP = n(),
+                          gf = sum(GF),
+                          ga = sum(GA),
+                          gd = sum(GD),
+                          W = sum(GD>0),
+                          D = sum(GD==0),
+                          L = sum(GD<0)
+                ) %>%
+                mutate(Pts = (W*3) + D) %>%
+                arrange(desc(Pts))
+        
+        temp1 <- temp1 %>% mutate(pos = rank(desc(Pts)))
+        temp1
+}
+
 heat.map.data <- function(country,season,div){
         df <- filter(country.dfs[[country]],
                      seasonValue==season & tier==div)
-        df
+        
+        df1 <- season.table(df)
+        df1 <- df1 %>% select(team,pos) %>% arrange(pos)
+        
+        homeorder <- df1$team
+        visitororder <- rev(df1$team)
+        
+        df$xpos <- aaply(df$home,1,function(x) which(homeorder==x))
+        df$ypos <- aaply(df$visitor,1,function(x) which(visitororder==x))
+        
+        heatmapdata <- list()
+        for (i in 1:dim(df)[1]){
+                heatmapdata[[length(heatmapdata)+1]] <- list(
+                        x=df[i,]$xpos,
+                        y=df[i,]$ypos,
+                        value=df[i,]$result,
+                        name=paste(df[i,]$home,"vs.",df[i,]$away),
+                        score=df[i,]$FT)
+        }
+        
+        return(list(homeorder,visitororder,heatmapdata))
 }
 
 create.heat.map <- function(country,season,tier){
         if(!is.null(season)&!is.null(tier)){
-                df <- heat.map.data(country,season,tier)
+                hmd <- heat.map.data(country,season,tier)
                 h1 <- Highcharts$new()
                 h1$title(text=paste("Results Matrix for",tier,season))
                 h1$chart(type="heatmap")
-                h1$xAxis(categories=as.list(unique(df$visitor)))
-                h1$yAxis(categories=as.list(unique(df$home)))
+                h1$xAxis(categories=hmd[[1]])
+                h1$yAxis(categories=hmd[[2]])
+                h1$data(hmd[[3]])
+                h1$addParams(colorAxis=list(min = 0,
+                                            minColor='#FFFFFF',
+                                            maxColor='#7cb5ec'))
+                h1$addAssets(js=c("https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js",
+                                 "https://code.highcharts.com/highcharts.js",
+                                 "https://code.highcharts.com/highcharts-more.js",
+                                 "https://code.highcharts.com/modules/exporting.js",
+                                 "https://code.highcharts.com/modules/heatmap.js"))
                 h1
         } else {
                 Highcharts$new()
