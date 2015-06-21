@@ -69,8 +69,22 @@ tier.values <- function(country,season){
         as.list(unique(relevanttiers))
 }
 
+heat.map.data <- function(country,season,div){
+        df <- filter(country.dfs[[country]],
+                     seasonValue==season & tier==div)
+        df
+}
+
 create.heat.map <- function(country,season,tier){
-        h1 <- Highcharts$new()
-        h1$title(text="Heat Map")
-        h1
+        if(!is.null(season)&!is.null(tier)){
+                df <- heat.map.data(country,season,tier)
+                h1 <- Highcharts$new()
+                h1$title(text=paste("Fixture Map for",tier,season))
+                h1$chart(type="heatmap")
+                h1$xAxis(categories=as.list(unique(df$visitor)))
+                h1$yAxis(categories=as.list(unique(df$home)))
+                h1
+        } else {
+                Highcharts$new()
+        }
 }
